@@ -48,21 +48,21 @@ typedef struct {
 }sectors; sectors S[30];
 //------------------------------------------------------------------------------
 
-void pixel(int x,int y, int c)                  //draw a pixel at x/y with rgb
-{int rgb[3];
- if(c==0){ rgb[0]=255; rgb[1]=255; rgb[2]=  0;} //Yellow	
- if(c==1){ rgb[0]=160; rgb[1]=160; rgb[2]=  0;} //Yellow darker	
- if(c==2){ rgb[0]=  0; rgb[1]=255; rgb[2]=  0;} //Green	
- if(c==3){ rgb[0]=  0; rgb[1]=160; rgb[2]=  0;} //Green darker	
- if(c==4){ rgb[0]=  0; rgb[1]=255; rgb[2]=255;} //Cyan	
- if(c==5){ rgb[0]=  0; rgb[1]=160; rgb[2]=160;} //Cyan darker
- if(c==6){ rgb[0]=160; rgb[1]=100; rgb[2]=  0;} //brown	
- if(c==7){ rgb[0]=110; rgb[1]= 50; rgb[2]=  0;} //brown darker
- if(c==8){ rgb[0]=  0; rgb[1]= 60; rgb[2]=130;} //background 
- glColor3ub(rgb[0],rgb[1],rgb[2]); 
- glBegin(GL_POINTS);
- glVertex2i(x*pixelScale+2,y*pixelScale+2);
- glEnd();
+void pixel(int x,int y, int c){					//draw a pixel at x/y with rgb
+	int rgb[3];
+	if(c==0){ rgb[0]=255; rgb[1]=255; rgb[2]=  0;} //Yellow	
+	if(c==1){ rgb[0]=160; rgb[1]=160; rgb[2]=  0;} //Yellow darker	
+	if(c==2){ rgb[0]=  0; rgb[1]=255; rgb[2]=  0;} //Green	
+	if(c==3){ rgb[0]=  0; rgb[1]=160; rgb[2]=  0;} //Green darker	
+	if(c==4){ rgb[0]=  0; rgb[1]=255; rgb[2]=255;} //Cyan	
+	if(c==5){ rgb[0]=  0; rgb[1]=160; rgb[2]=160;} //Cyan darker
+	if(c==6){ rgb[0]=160; rgb[1]=100; rgb[2]=  0;} //brown	
+	if(c==7){ rgb[0]=110; rgb[1]= 50; rgb[2]=  0;} //brown darker
+	if(c==8){ rgb[0]=  0; rgb[1]= 60; rgb[2]=130;} //background 
+	glColor3ub(rgb[0],rgb[1],rgb[2]); 
+	glBegin(GL_POINTS);
+	glVertex2i(x*pixelScale+2,y*pixelScale+2);
+	glEnd();
 }
 
 void movePlayer(){
@@ -85,8 +85,8 @@ void movePlayer(){
  if(K.sr==1){ P.a-=4; if(P.a<  0){P.a+=360;}}
  if(K.sl==1){ P.a+=4; if(P.a>359){P.a-=360;}}
  //move up, down, look up, look down
- if(K.a==1 && K.m==1){ P.l-=1;}
- if(K.d==1 && K.m==1){ P.l+=1;}
+ if(K.a==1 && K.m==1){ P.l+=1;}
+ if(K.d==1 && K.m==1){ P.l-=1;}
  if(K.w==1 && K.m==1){ P.z-=4;}
  if(K.s==1 && K.m==1){ P.z+=4;}
 }
@@ -143,7 +143,7 @@ int dist(int x1, int y1, int x2, int y2){
 }
 
 void draw3D(){
-	int s,w, wx[4], wy[4], wz[4]; float CS=M.cos[P.a], SN=M.sin[P.a];
+	int s,w,loop, wx[4], wy[4], wz[4]; float CS=M.cos[P.a], SN=M.sin[P.a];
 	//sort walls by dist
 	for (s=0;s<numSect-1;s++) {
 		for (w=0;w<numSect-s-1;w++) {
@@ -157,46 +157,50 @@ void draw3D(){
 	for (s=0;s<numSect;s++){
 		
 		S[s].d=0; 						//clear dist
-		for(w=S[s].ws;w<S[s].we;w++) {
-			
-			//mode bottom 2 points by player
-			int x1=W[w].x1-P.x, y1=W[w].y1-P.y;
-			int x2=W[w].x2-P.x, y2=W[w].y2-P.y;
-			//world x pos
-			wx[0]=x1*CS-y1*SN;
-			wx[1]=x2*CS-y2*SN;
-			wx[2]=wx[0];				//top line has the same x
-			wx[3]=wx[1];
-			//world y pos (depthh)
-			wy[0]=y1*CS+x1*SN;
-			wy[1]=y2*CS+x2*SN;
-			wy[2]=wy[0];				//top line has the same y
-			wy[3]=wy[1];
-			S[s].d+=dist(0,0, (wx[0]+wx[1])/2, (wy[0]+wy[1])/2 ); //store this walls dist
-			//world z height
-			wz[0]=S[s].z1-P.z + ((P.l*wy[0])/32.0);
-			wz[1]=S[s].z1-P.z + ((P.l*wy[1])/32.0);
-			wz[2]=wz[0]+S[s].z2;				//top line has a new z
-			wz[3]=wz[1]+S[s].z2;
-			//dont draw if behind player
-			if(wy[0]<1 && wy[1]<1) { continue;} //if wall behind player, dont draw
-			//point 1 behind play, clip
-			if(wy[0]<1){
-				clipBehindPlayer(&wx[0],&wy[0],&wz[0], &wx[1],&wy[1],&wz[1]); //bottom line
-				clipBehindPlayer(&wx[2],&wy[2],&wz[2], &wx[3],&wy[3],&wz[3]); //top line
+		for(loop=0;loop<2;loop++){
+			for (w=S[s].ws;w<S[s].we;w++) {
+				//offset bottom 2 points by player
+				int x1=W[w].x1-P.x, y1=W[w].y1-P.y;
+				int x2=W[w].x2-P.x, y2=W[w].y2-P.y;
+				//swap walls
+				if (loop==0) {int swp=x1; x1=x2; x2=swp; swp=y1; y1=y2; y2=swp;}
+				//world x pos
+				wx[0]=x1*CS-y1*SN;
+				wx[1]=x2*CS-y2*SN;
+				wx[2]=wx[0];				//top line has the same x
+				wx[3]=wx[1];
+				//world y pos (depthh)
+				wy[0]=y1*CS+x1*SN;
+				wy[1]=y2*CS+x2*SN;
+				wy[2]=wy[0];				//top line has the same y
+				wy[3]=wy[1];
+				S[s].d+=dist(0,0, (wx[0]+wx[1])/2, (wy[0]+wy[1])/2 ); //store this walls dist
+				//world z height
+				wz[0]=S[s].z1-P.z + ((P.l*wy[0])/32.0);
+				wz[1]=S[s].z1-P.z + ((P.l*wy[1])/32.0);
+				wz[2]=wz[0]+S[s].z2;				//top line has a new z
+				wz[3]=wz[1]+S[s].z2;
+				//dont draw if behind player
+				if(wy[0]<1 && wy[1]<1) { continue;} //if wall behind player, dont draw
+				//point 1 behind play, clip
+				if(wy[0]<1){
+					clipBehindPlayer(&wx[0],&wy[0],&wz[0], &wx[1],&wy[1],&wz[1]); //bottom line
+					clipBehindPlayer(&wx[2],&wy[2],&wz[2], &wx[3],&wy[3],&wz[3]); //top line
+				}
+				//point 2 behind play, clip
+				if(wy[1]<1){
+					clipBehindPlayer(&wx[1],&wy[1],&wz[1], &wx[0],&wy[0],&wz[0]); //bottom line
+					clipBehindPlayer(&wx[2],&wy[2],&wz[2], &wx[3],&wy[3],&wz[3]); //top line
+				}
+				//screen x & y pos
+				wx[0]=wx[0]*200/wy[0]+SW2; wy[0]=wz[0]*200/wy[0]+SH2;
+				wx[1]=wx[1]*200/wy[1]+SW2; wy[1]=wz[1]*200/wy[1]+SH2;
+				wx[2]=wx[2]*200/wy[2]+SW2; wy[2]=wz[2]*200/wy[2]+SH2;
+				wx[3]=wx[3]*200/wy[3]+SW2; wy[3]=wz[3]*200/wy[3]+SH2;
+				//draw points
+				drawWall(wx[0],wx[1], wy[0],wy[1], wy[2],wy[3], W[w].c);
 			}
-			//point 2 behind play, clip
-			if(wy[1]<1){
-				clipBehindPlayer(&wx[1],&wy[1],&wz[1], &wx[0],&wy[0],&wz[0]); //bottom line
-				clipBehindPlayer(&wx[2],&wy[2],&wz[2], &wx[3],&wy[3],&wz[3]); //top line
-			}
-			//screen x & y pos
-			wx[0]=wx[0]*200/wy[0]+SW2; wy[0]=wz[0]*200/wy[0]+SH2;
-			wx[1]=wx[1]*200/wy[1]+SW2; wy[1]=wz[1]*200/wy[1]+SH2;
-			wx[2]=wx[2]*200/wy[2]+SW2; wy[2]=wz[2]*200/wy[2]+SH2;
-			wx[3]=wx[3]*200/wy[3]+SW2; wy[3]=wz[3]*200/wy[3]+SH2;
-			//draw points
-			drawWall(wx[0],wx[1], wy[0],wy[1], wy[2],wy[3], W[w].c);
+			S[s].d/(S[s].we-S[s].ws);
 		}
 	}
 }
