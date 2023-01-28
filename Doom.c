@@ -1,7 +1,3 @@
-//------------------------------------------------------------------------------
-//--------------------------Code By: 3DSage-------------------------------------
-//----------------Video tutorial on YouTube-3DSage------------------------------
-//------------------------------------------------------------------------------
 
 #include <math.h>
 #include <stdio.h>
@@ -79,6 +75,17 @@ void clearBackground()
  { 
   for(x=0;x<SW;x++){ pixel(x,y,8);} //clear background color
  }	
+}
+
+void clipBehindPlayer(int *x1,int *y1,int *z1, int x2,int y2,int z2){ //Clip line
+
+	float da=*y1;
+	float db= y2;
+	float d=da-db; if(d==0) { d=1; }
+	float s = da/ (da-db);
+	*x1 = *x1 + s*(x2-(*x1));
+	*y1 = *y1 + s*(y2-(*y1)); if(*y1==0) { *y1=1;}
+	*z1 = *z1 + s*(z2-(*z1));
 }
 
 void drawWall(int x1,int x2, int b1,int b2, int t1,int t2) {
@@ -201,5 +208,4 @@ int main(int argc, char* argv[]) {
  glutKeyboardUpFunc(KeysUp);
  glutMainLoop();
  return 0;
-} 
-
+}
