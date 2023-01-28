@@ -1,5 +1,5 @@
 # Doom remake
-Trying to remake doom in C++ using openGL
+Trying to remake doom in C using openGL
 
 Controls:
 W
