@@ -1,4 +1,3 @@
-
 #include <math.h>
 #include <stdio.h>
 #include <GL/glut.h> 
@@ -90,8 +89,8 @@ void movePlayer(){
  //move up, down, look up, look down
  if(K.a==1 && K.m==1){ P.l+=1;}
  if(K.d==1 && K.m==1){ P.l-=1;}
- if(K.w==1 && K.m==1){ P.z-=4;}
- if(K.s==1 && K.m==1){ P.z+=4;}
+ if(K.w==1 && K.m==1){ P.z+=4;}
+ if(K.s==1 && K.m==1){ P.z-=4;}
 }
 
 void clearBackground() 
@@ -172,7 +171,7 @@ void draw3D(){
 				int x1=W[w].x1-P.x, y1=W[w].y1-P.y;
 				int x2=W[w].x2-P.x, y2=W[w].y2-P.y;
 				//swap walls
-				if (loop==0) {int swp=x1; x1=x2; x2=swp; swp=y1; y1=y2; y2=swp;}
+				if (loop==0) {int swp=x1; x1=x2; x2=swp; swp=y1; y1=y2; y2=swp;} //this is renders the insides of the walls on the first loop, might delete it later for optimization
 				//world x pos
 				wx[0]=x1*CS-y1*SN;
 				wx[1]=x2*CS-y2*SN;
@@ -226,6 +225,7 @@ void display()
   T.fr2=T.fr1;   
   glutSwapBuffers(); 
   glutReshapeWindow(GLSW,GLSH);             //prevent window scaling
+  glutSetWindowTitle("Doom3D");
  }
 
  T.fr1=glutGet(GLUT_ELAPSED_TIME);          //1000 Milliseconds per second
