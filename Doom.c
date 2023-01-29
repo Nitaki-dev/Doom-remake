@@ -225,7 +225,7 @@ void display()
   T.fr2=T.fr1;   
   glutSwapBuffers(); 
   glutReshapeWindow(GLSW,GLSH);             //prevent window scaling
-  glutSetWindowTitle("Doom3D");
+  //glutSetWindowTitle("Doom3D");
  }
 
  T.fr1=glutGet(GLUT_ELAPSED_TIME);          //1000 Milliseconds per second
@@ -233,29 +233,29 @@ void display()
 } 
 
 void KeysDown(unsigned char key,int x,int y) { 
- if(key=='w'==1){ K.w =1;} 
- if(key=='s'==1){ K.s =1;} 
- if(key=='a'==1){ K.a =1;} 
- if(key=='d'==1){ K.d =1;} 
- if(key=='m'==1){ K.m =1;} 
- if(key==','==1){ K.sr=1;} 
- if(key=='.'==1){ K.sl=1;} 
+ if(key=='w'==1 || key=='8'==1){ K.w =1;} 
+ if(key=='s'==1 || key=='5'==1){ K.s =1;} 
+ if(key=='a'==1 || key=='4'==1){ K.a =1;} 
+ if(key=='d'==1 || key=='6'==1){ K.d =1;} 
+ if(key=='m'==1 || key=='0'==1){ K.m =1;} 
+ if(key==','==1 || key=='1'==1){ K.sr=1;} 
+ if(key=='.'==1 || key=='3'==1){ K.sl=1;} 
 }
 void KeysUp(unsigned char key,int x,int y) { 
- if(key=='w'==1){ K.w =0;}
- if(key=='s'==1){ K.s =0;}
- if(key=='a'==1){ K.a =0;}
- if(key=='d'==1){ K.d =0;}
- if(key=='m'==1){ K.m =0;}
- if(key==','==1){ K.sr=0;} 
- if(key=='.'==1){ K.sl=0;}
+ if(key=='w'==1 || key=='8'==1){ K.w =0;}
+ if(key=='s'==1 || key=='5'==1){ K.s =0;}
+ if(key=='a'==1 || key=='4'==1){ K.a =0;}
+ if(key=='d'==1 || key=='6'==1){ K.d =0;}
+ if(key=='m'==1 || key=='0'==1){ K.m =0;}
+ if(key==','==1 || key=='1'==1){ K.sr=0;} 
+ if(key=='.'==1 || key=='3'==1){ K.sl=0;}
 }
 
 int loadSectors[]={
- 0, 4,  0, 40, 2,3,
- 4, 8,  0, 40, 4,5,
- 8, 12, 0, 40, 6,7,
- 12,16, 0, 40, 0,1,
+	0, 4,  0, 20, 2,3,
+	4, 8,  0, 40, 4,5,
+	8, 12, 0, 20, 6,7,
+	12,16, 0, 40, 0,1,
 };
 
 int loadWalls[]=
@@ -318,7 +318,7 @@ int main(int argc, char* argv[]) {
  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
  glutInitWindowPosition(GLSW/2,GLSH/2);
  glutInitWindowSize(GLSW,GLSH);
- glutCreateWindow(""); 
+ glutCreateWindow("Doom");
  glPointSize(pixelScale);                        //pixel size
  gluOrtho2D(0,GLSW,0,GLSH);                      //origin bottom left
  init();
