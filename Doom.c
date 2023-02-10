@@ -10,8 +10,8 @@
 #define pixelScale 4/res                    //OpenGL pixel scale
 #define GLSW       (SW*pixelScale)          //OpenGL window width
 #define GLSH       (SH*pixelScale)          //OpenGL window height
-#define numSect 4
-#define numWall 16
+#define numSect 10
+#define numWall 52
 //------------------------------------------------------------------------------
 typedef struct {
  int fr1,fr2;           //frame 1 frame 2, to create constant frame rate
@@ -129,10 +129,10 @@ void drawWall(int x1,int x2, int b1,int b2, int t1,int t2, int c, int s){
 		int y1 = dyb*(x-xs+0.5)/dx+b1; //y bottom point
 		int y2 = dyt*(x-xs+0.5)/dx+t1; //y top point
 		//CLIP Y
-		if(y1<   1){ y1=   1;} //clip y
-		if(y2<   1){ y2=   1;} //clip y
-		if(y1>SH-1){ y1=SH-1;} //clip y
-		if(y2>SH-1){ y2=SH-1;} //clip y
+		if(y1<   1){ y1=   1;} //clip y1 1
+		if(y2<   1){ y2=   1;} //clip y2 1
+		if(y1>SH-1){ y1=SH-1;} //clip y1 2
+		if(y2>SH-1){ y2=SH-1;} //clip y2 2
 		
 		if (S[s].surface== 1) { S[s].surf[x]=y1; continue; } //save bottom points
 		if (S[s].surface== 2) { S[s].surf[x]=y2; continue; } //save top    points
@@ -143,12 +143,13 @@ void drawWall(int x1,int x2, int b1,int b2, int t1,int t2, int c, int s){
 }
 
 int dist(int x1, int y1, int x2, int y2){
-	int distance = sqrt( (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) ); //frick this
+	int distance = sqrt( (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) ); //pythagorean theorem moment
 	return distance;
 }
 
 void draw3D(){
 	int s,w,loop, wx[4], wy[4], wz[4]; float CS=M.cos[P.a], SN=M.sin[P.a];
+	
 	//sort walls by dist
 	for (s=0;s<numSect-1;s++) {
 		for (w=0;w<numSect-s-1;w++) {
@@ -251,37 +252,6 @@ void KeysUp(unsigned char key,int x,int y) {
  if(key=='.'==1 || key=='3'==1){ K.sl=0;}
 }
 
-int loadSectors[]={
-	0, 4,  0, 20, 2,3,
-	4, 8,  0, 40, 4,5,
-	8, 12, 0, 20, 6,7,
-	12,16, 0, 40, 0,1,
-};
-
-int loadWalls[]=
-
-{//x1,yl, x2,y2, color
-	0,  0,  32, 0,  0,
-	32, 0,  32, 32, 1,
-	32, 32, 0,  32, 0,
-	0,  32, 0,  0,  1,
-	
-	64, 0,  96,  0, 2,
-	96, 0,  96, 32, 3,
-	96, 32, 64, 32, 2,
-	64, 32, 64,  0, 3,
-	
-	64, 64, 96, 64, 4,
-	96, 64, 96, 96, 5,
-	96, 96, 64, 96, 4,
-	64, 96, 64, 64, 5,
-	
-	0,  64, 32, 64, 6,
-	32, 64, 32, 96, 7,
-	32, 96, 0,  96, 6,
-	0,  96, 0,  64, 7,
-};
-
 void init(){
 	//store sin & cos in degrees
 	int x;
@@ -318,7 +288,7 @@ int main(int argc, char* argv[]) {
  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
  glutInitWindowPosition(GLSW/2,GLSH/2);
  glutInitWindowSize(GLSW,GLSH);
- glutCreateWindow("Doom");
+ glutCreateWindow("Doom");						 //renames the window
  glPointSize(pixelScale);                        //pixel size
  gluOrtho2D(0,GLSW,0,GLSH);                      //origin bottom left
  init();
