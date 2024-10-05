@@ -1,14 +1,17 @@
 # Doom remake
-Trying to remake doom in C using openGL
+Nothing worth while. 
 
-Controls:
-`W` to go forward
-`A` to strafe left
-`S` to go backward
-`D` to strafe right
-`M+W` to move up
-`M+A` to look down
-`M+S` to move down
-`M+D` to look up
-`<` to look left
-`>` to look right
+Controls:<br>
+`W` to go forward<br>
+`A` to strafe left<br>
+`S` to go backward<br>
+`D` to strafe right<br>
+`M+W` to move up<br>
+`M+A` to look down<br>
+`M+S` to move down<br>
+`M+D` to look up<br>
+`<` to look left<br>
+`>` to look right<br>
+
+<br><br>
+[Source](https://www.youtube.com/@3DSage)
